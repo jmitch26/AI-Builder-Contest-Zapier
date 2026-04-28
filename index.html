@@ -1092,33 +1092,33 @@
     <form onsubmit="handleSubmit(event)">
       <div class="form-group">
         <label>Full Name <span>*</span></label>
-        <input type="text" placeholder="Jane Smith" required />
+        <input id="f-name" type="text" placeholder="Jane Smith" required />
       </div>
       <div class="form-group">
         <label>Email Address <span>*</span></label>
-        <input type="email" placeholder="jane@company.com" required />
+        <input id="f-email" type="email" placeholder="jane@company.com" required />
       </div>
       <div class="form-group">
         <label>LinkedIn Profile URL <span>*</span></label>
-        <input type="url" placeholder="https://linkedin.com/in/yourname" required />
+        <input id="f-linkedin" type="url" placeholder="https://linkedin.com/in/yourname" required />
       </div>
       <div class="form-group">
         <label>Video Demo Link <span>*</span></label>
-        <input type="url" placeholder="https://youtube.com/watch?v=... (must be public)" required />
+        <input id="f-video" type="url" placeholder="https://youtube.com/watch?v=... (must be public)" required />
       </div>
       <div class="form-group">
         <label>Build Summary <span>*</span></label>
-        <textarea placeholder="Describe what you built, the problem it solves, and how it works. 2–5 sentences is ideal." required></textarea>
+        <textarea id="f-summary" placeholder="Describe what you built, the problem it solves, and how it works. 2–5 sentences is ideal." required></textarea>
       </div>
       <div class="form-group">
         <label>Tools Used <span>*</span></label>
-        <textarea placeholder="e.g. Zapier, ChatGPT / GPT-4, Salesforce, Outreach, Claude, etc." required style="min-height: 70px;"></textarea>
+        <textarea id="f-tools" placeholder="e.g. Zapier, ChatGPT / GPT-4, Salesforce, Outreach, Claude, etc." required style="min-height: 70px;"></textarea>
       </div>
       <div class="form-consent">
         <input type="checkbox" id="consent" required />
         <label for="consent">I confirm this submission does not contain proprietary or confidential information, and I agree that Zapier may use my name and project for promotional purposes. I understand I am responsible for any taxes on prizes received.</label>
       </div>
-      <button type="submit" class="form-submit">Submit Entry</button>
+      <button type="submit" class="form-submit" id="submit-btn">Submit Entry</button>
     </form>
   </div>
 </div>
@@ -1138,10 +1138,36 @@
     if (e.target === document.getElementById('modal')) closeModal();
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    alert('Thank you for your submission! We\'ll be in touch after the May 12 deadline.');
-    closeModal();
+    const btn = document.getElementById('submit-btn');
+    btn.textContent = 'Submitting...';
+    btn.disabled = true;
+
+    const payload = {
+      name:         document.getElementById('f-name').value,
+      email:        document.getElementById('f-email').value,
+      linkedin:     document.getElementById('f-linkedin').value,
+      video_url:    document.getElementById('f-video').value,
+      build_summary: document.getElementById('f-summary').value,
+      tools_used:   document.getElementById('f-tools').value,
+      submitted_at: new Date().toISOString()
+    };
+
+    try {
+      await fetch('https://hooks.zapier.com/hooks/catch/10337860/uv1anfv/', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+      btn.textContent = 'Submit Entry';
+      btn.disabled = false;
+      closeModal();
+      alert('You\'re in! We\'ll be in touch after the May 12 deadline.');
+    } catch (err) {
+      btn.textContent = 'Submit Entry';
+      btn.disabled = false;
+      alert('Something went wrong. Please try again or email us directly.');
+    }
   }
 
   // Smooth scroll for nav links
