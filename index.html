@@ -1113,6 +1113,10 @@
         <input type="checkbox" id="consent" required />
         <label for="consent">I confirm this submission does not contain proprietary or confidential information. I understand that if Zapier wishes to use my name or project for marketing purposes, they will ask for my explicit permission first. I understand I am responsible for any taxes on prizes received.</label>
       </div>
+      <div class="form-consent">
+        <input type="checkbox" id="careers-optin" />
+        <label for="careers-optin">I'd like to hear from Zapier about career opportunities and recruiting-related communications.</label>
+      </div>
       <button type="submit" class="form-submit" id="submit-btn">Submit Entry</button>
     </form>
   </div>
@@ -1146,6 +1150,7 @@
       video_url:    document.getElementById('f-video').value,
       build_summary: document.getElementById('f-summary').value,
       tools_used:   document.getElementById('f-tools').value,
+      careers_optin: document.getElementById('careers-optin').checked,
       submitted_at: new Date().toISOString()
     };
 
